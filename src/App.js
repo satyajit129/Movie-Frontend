@@ -1,6 +1,9 @@
-import { Swiper, SwiperSlide } from 'swiper/react'; // Import Swiper components
-import 'swiper/swiper.min.css'; // Import Swiper CSS from the new path
-import './assets/boxicons-2.0.7/css/boxicons.min.css'; // Your other styles
+import { Swiper, SwiperSlide } from 'swiper/react';
+// Import Swiper styles from version 11.1.14
+import 'swiper/css';
+import 'swiper/css/pagination'; // Optional: Only if you are using pagination feature
+
+import './assets/boxicons-2.0.7/css/boxicons.min.css';
 import './App.scss';
 
 import { BrowserRouter } from 'react-router-dom';

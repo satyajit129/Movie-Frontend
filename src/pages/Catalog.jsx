@@ -8,13 +8,16 @@ import { category as cate } from '../api/tmdbApi';
 import MovieGrid from '../components/movie-grid/MovieGrid';
 
 const Catalog = () => {
-
     const { category } = useParams();
+    const capitalizeFirstLetter = (string) => {
+        return string.charAt(0).toUpperCase() + string.slice(1);
+    };
+    const capitalizedCategory = capitalizeFirstLetter(category);
 
     return (
         <>
             <PageHeader>
-                {category === cate.movie ? 'Movies' : 'TV Series'}
+                {capitalizedCategory}
             </PageHeader>
             <div className="container">
                 <div className="section mb-3">
