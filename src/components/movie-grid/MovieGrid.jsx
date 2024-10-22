@@ -8,9 +8,12 @@ import Button, { OutlineButton } from '../button/Button';
 import Input from '../input/Input'
 
 import tmdbApi, { category, movieType, tvType } from '../../api/tmdbApi';
+import { fetchMovies } from '../../service/movieService';
+import { toSnakeCase } from '../../service/toSnakeCase';
 
 const MovieGrid = props => {
-
+    // console.log('props');
+    // console.log(props.category);
     const [items, setItems] = useState([]);
 
     const [page, setPage] = useState(1);
@@ -20,27 +23,30 @@ const MovieGrid = props => {
 
     useEffect(() => {
         const getList = async () => {
-            let response = null;
-            if (keyword === undefined) {
-                const params = {};
-                switch(props.category) {
-                    case category.movie:
-                        response = await tmdbApi.getMoviesList(movieType.upcoming, {params});
-                        break;
-                    default:
-                        response = await tmdbApi.getTvList(tvType.popular, {params});
+            try {
+                let response = null;
+                if (!keyword) {
+                    const category = toSnakeCase(props.category);
+                    const params = { query: category };
+                    console.log(params.query);
+                    response = await fetchMovies(params.query);
+                    console.log(response);
+                } else {
+                    const params = { query: keyword };
+                    console.log(params);
+                    console.log(params.query);
+                    response = await fetchMovies(params.query);
                 }
-            } else {
-                const params = {
-                    query: keyword
+                if (response) {
+                    setItems(response || []);
                 }
-                response = await tmdbApi.search(props.category, {params});
+            } catch (error) {
+                console.error('Error fetching movie list:', error);
             }
-            setItems(response.results);
-            setTotalPage(response.total_pages);
-        }
+        };
+
         getList();
-    }, [props.category, keyword]);
+    }, [keyword, props.category]);
 
     const loadMore = async () => {
         let response = null;
@@ -69,6 +75,7 @@ const MovieGrid = props => {
     return (
         <>
             <div className="section mb-3">
+                {/* <h1>{props.category}</h1> */}
                 <MovieSearch category={props.category} keyword={keyword}/>
             </div>
             <div className="movie-grid">

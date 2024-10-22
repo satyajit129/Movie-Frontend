@@ -8,18 +8,28 @@ import VideoList from './VideoList';
 import MovieList from '../../components/movie-list/MovieList';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
+import { OutlineButton } from '../../components/button/Button';
+import { fetchMovies } from '../../service/movieService';
 
 const Detail = () => {
     const { id } = useParams(); // Get the movie ID from the URL
     const [movie, setMovie] = useState(null);
     const [loading, setLoading] = useState(true);
 
+    const [trendingMovies, setTrendingMovies] = useState([]);
+
+    const [relatedMovies, setRelatedMovies] = useState([]);
+
     useEffect(() => {
         const fetchMovieDetails = async () => {
             try {
+
                 const response = await axios.get(`http://127.0.0.1:8000/api/movie-details/${id}`);
-                console.log(response.data);
+                console.log(response.data.related_movies);
+                const trendingMoviesRes = await fetchMovies('trending');
                 setMovie(response.data);
+                setRelatedMovies(response.data.related_movies);
+                setTrendingMovies(trendingMoviesRes);
             } catch (error) {
                 console.error('Error fetching movie details:', error);
             } finally {
@@ -60,6 +70,17 @@ const Detail = () => {
                     <div className="download">
                         <Link className='genres__item'>Download</Link>
                     </div>
+                </div>
+
+            </div>
+            <div className="container">
+                
+                {/* Trending Movies Section */}
+                <div className="section mb-3">
+                    <div className="section__header mb-2">
+                        <h2>Related Movies</h2>
+                    </div>
+                    <MovieList movies={relatedMovies} />
                 </div>
             </div>
         </>

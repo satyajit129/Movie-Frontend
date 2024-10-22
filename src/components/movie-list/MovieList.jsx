@@ -14,8 +14,8 @@ import apiConfig from '../../api/apiConfig';
 import MovieCard from '../movie-card/MovieCard';
 
 const MovieList = ({ movies  }) => {
-    console.log('movies');
-    console.log(movies);
+    // console.log('movies');
+    // console.log(movies);
     return (
         <div className="movie-list">
             <Swiper

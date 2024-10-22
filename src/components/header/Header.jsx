@@ -1,68 +1,57 @@
-import React, { useRef, useEffect } from 'react';
-
+import React, { useRef, useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-
 import './header.scss';
-
 import logo from '../../assets/tmovie.png';
-
-const headerNav = [
-    {
-        display: 'Home',
-        path: '/'
-    },
-    {
-        display: 'Movies',
-        path: '/movie'
-    },
-    {
-        display: 'TV Series',
-        path: '/tv'
-    },
-    {
-        display: 'Tranding Movies',
-        path: '/tranding'
-    }
-];
+import { fetchMovies } from '../../service/movieService';
 
 const Header = () => {
-
-    const { pathname } = useLocation();
     const headerRef = useRef(null);
 
-    const active = headerNav.findIndex(e => e.path === pathname);
+    const [trendingMovies, setTrendingMovies] = useState([]);
+    const [topRatedMovies, setTopRatedMovies] = useState([]);
 
+    const location = useLocation();
+
+    // console.log(currentUrl);
+    
     useEffect(() => {
-        const shrinkHeader = () => {
-            if (document.body.scrollTop > 100 || document.documentElement.scrollTop > 100) {
-                headerRef.current.classList.add('shrink');
-            } else {
-                headerRef.current.classList.remove('shrink');
+        const fetchTrendingAndTopRated = async () => {
+            try {
+                const trendingMoviesRes = await fetchMovies('trending');
+                const topRatedMoviesRes = await fetchMovies('top_rated');
+                setTrendingMovies(trendingMoviesRes);
+                setTopRatedMovies(topRatedMoviesRes);
+            } catch (error) {
+                console.error('Error fetching data:', error);
             }
-        }
-        window.addEventListener('scroll', shrinkHeader);
-        return () => {
-            window.removeEventListener('scroll', shrinkHeader);
         };
+
+        fetchTrendingAndTopRated();
     }, []);
 
     return (
         <div ref={headerRef} className="header">
             <div className="header__wrap container">
                 <div className="logo">
-                    <img src={logo} alt="" />
+                    <img src={logo} alt="Logo" />
                     <Link to="/">Roy</Link>
                 </div>
                 <ul className="header__nav">
-                    {
-                        headerNav.map((e, i) => (
-                            <li key={i} className={`${i === active ? 'active' : ''}`}>
-                                <Link to={e.path}>
-                                    {e.display}
-                                </Link>
-                            </li>
-                        ))
-                    }
+                    <li>
+                        <Link to="/" className={location.pathname === '/' ? 'active' : ''}>
+                            Home 
+                        </Link>
+                    </li>
+                    <li>
+                        <Link to="/trending" className={location.pathname === '/trending' ? 'active' : ''}>
+                            Trending 
+                        </Link>
+                    </li>
+                    <li>
+                        <Link to="/top-rated" className={location.pathname === '/top-rated' ? 'active' : ''}>
+                            Top Rated 
+                        </Link>
+                    </li>
                 </ul>
             </div>
         </div>

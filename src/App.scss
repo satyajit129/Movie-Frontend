@@ -78,7 +78,10 @@ iframe {
 .section {
     padding: 0 2rem;
 }
-
+.header__nav .active {
+    font-weight: bold;
+    color: red;
+}
 .section__header {
     @include flex(center, space-between);
 }
