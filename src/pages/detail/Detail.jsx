@@ -10,6 +10,7 @@ import axios from 'axios';
 import { Link } from 'react-router-dom';
 import { OutlineButton } from '../../components/button/Button';
 import { fetchMovies } from '../../service/movieService';
+import { fetchMovieDetails } from './../../service/movieDetails';
 
 const Detail = () => {
     const { id } = useParams(); // Get the movie ID from the URL

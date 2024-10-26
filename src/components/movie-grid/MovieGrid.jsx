@@ -121,18 +121,6 @@ const MovieSearch = props => {
             document.removeEventListener('keyup', enterEvent);
         };
     }, [keyword, goToSearch]);
-
-    return (
-        <div className="movie-search">
-            <Input
-                type="text"
-                placeholder="Enter keyword"
-                value={keyword}
-                onChange={(e) => setKeyword(e.target.value)}
-            />
-            <Button className="small" onClick={goToSearch}>Search</Button>
-        </div>
-    )
 }
 
 export default MovieGrid;

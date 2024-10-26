@@ -12,6 +12,7 @@ import apiConfig from '../../api/apiConfig';
 import './hero-slide.scss';
 import { useNavigate } from 'react-router';
 import { Autoplay } from 'swiper/modules';
+import { fetchSliders } from '../../service/sliderImage';
 
 const HeroSlide = () => {
 
@@ -22,11 +23,10 @@ const HeroSlide = () => {
         const getMovies = async () => {
             const params = { page: 1 }
             try {
-                const response = await tmdbApi.getMoviesList(movieType.popular, { params });
-                setMovieItems(response.results.slice(1, 4));
+                const response = await fetchSliders();
                 // console.log(response);
+                setMovieItems(response);
             } catch {
-                // console.log('error');
             }
         }
         getMovies();
@@ -43,11 +43,16 @@ const HeroSlide = () => {
                     delay: 3000,
                     disableOnInteraction: false,
                 }}
-                onSlideChange={(swiper) => setActiveIndex(swiper.activeIndex)} // Correctly update active index
+                onSlideChange={(swiper) => setActiveIndex(swiper.activeIndex)} // Update active index on slide change
             >
                 {movieItems.map((item, i) => (
+                    // console.log('item'),
+                    // console.log(item),
                     <SwiperSlide key={i}>
-                        <HeroSlideItem item={item} className={`${activeIndex === i ? 'active' : ''}`} />
+                        <HeroSlideItem
+                            item={item}
+                            className={`${activeIndex === i ? 'active' : ''}`}
+                        />
                     </SwiperSlide>
                 ))}
             </Swiper>
@@ -60,8 +65,11 @@ const HeroSlideItem = props => {
     let hisrory = useNavigate();
 
     const item = props.item;
+    // console.log('item');
+    // console.log(item.slider_image_url);
+    // console.log(item.thumb_image_url);
 
-    const background = apiConfig.originalImage(item.backdrop_path ? item.backdrop_path : item.poster_path);
+    const background = item.slider_image_url;
 
     return (
         <div
@@ -70,8 +78,8 @@ const HeroSlideItem = props => {
         >
             <div className="hero-slide__item__content container">
                 <div className="hero-slide__item__content__info">
-                    <h2 className="title">{item.title}</h2>
-                    <div className="overview">{item.overview}</div>
+                    <h2 className="title">{item.name}</h2>
+                    <div className="overview">{item.description}</div>
                     <div className="btns">
                         <Button onClick={() => hisrory.push('/movie/' + item.id)}>
                             Watch now
@@ -79,7 +87,7 @@ const HeroSlideItem = props => {
                     </div>
                 </div>
                 <div className="hero-slide__item__content__poster">
-                    <img src={apiConfig.w500Image(item.poster_path)} alt="" />
+                    <img src={item.thumb_image_url} alt="" />
                 </div>
             </div>
         </div>

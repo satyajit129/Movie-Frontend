@@ -85,3 +85,7 @@ iframe {
 .section__header {
     @include flex(center, space-between);
 }
+.search-input{
+    background-color: white;
+    color: black
+}
